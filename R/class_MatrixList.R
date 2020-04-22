@@ -1,5 +1,9 @@
 #' @include class_show_utils.R
+#' @import Matrix
 NULL
+
+#' @name matrixORsparseMatrix-class
+setClassUnion("matrixORsparseMatrix", c("matrix", "sparseMatrix"))
 
 ###############################################################################
 ### MatrixList class
@@ -44,11 +48,11 @@ NULL
 #'   
 #' @slot metadata Matrix of additional information where each row corresponds to
 #'   one of the matrices in a list.
-#' @author Malgorzata Nowicka
-setClass("MatrixList", 
-  representation(unlistData = "matrix", 
-    partitioning = "list", 
-    metadata = "matrix"))
+#' @exportClass MatrixList
+setClass(Class = "MatrixList",
+         slots = c(unlistData = "matrixORsparseMatrix",
+                   partitioning = "list",
+                   metadata = "matrix"), package = "DTUrtle")
 
 
 ###################################
@@ -84,45 +88,16 @@ setValidity("MatrixList", function(object){
 ### MatrixList
 ###############################################################################
 
-MatrixList <- function(..., metadata){
+#' @export
+MatrixList <- function(unlistData, partitioning, metadata){
   
-  listData <- list(...)
-  
-  if (length(listData) == 1L && is.list(listData[[1L]]))
-    listData <- listData[[1L]]
-  
-  if (length(listData) == 0L) {
-    return(new("MatrixList"))
-    
-  } else {
-    
-    if (!all(sapply(listData, is, "matrix")))
-      stop("all elements in '...' must be matrices!")
-    
-    unlistData <- do.call(rbind, listData)
-    
-    w <- sapply(listData, nrow)
-    
-    partitioning <- vector("list", length(w))
-    
-    inds <- 1:nrow(unlistData)
-    names(inds) <- rownames(unlistData)
-    
-    partitioning[w != 0] <- split(inds, rep(1:length(w), w))
-    
-    if(!is.null(names(listData)))
-      names(partitioning) <- names(listData)
-    
-    if(!missing(metadata))
-      return(new("MatrixList", unlistData = unlistData, 
-        partitioning = partitioning, 
-        metadata = metadata))
-    else
-      return(new("MatrixList", unlistData = unlistData, 
-        partitioning = partitioning))
-    
-  }
-  
+  if(!missing(metadata))
+    return(new("MatrixList", unlistData = unlistData,
+               partitioning = partitioning,
+               metadata = metadata))
+  else
+    return(new("MatrixList", unlistData = unlistData,
+               partitioning = partitioning))
 }
 
 
@@ -148,13 +123,13 @@ setMethod("show", "MatrixList", function(object){
     else 
       print_names <- paste0("$", names(object_sub), "\n")
     
-    for(i in 1:np){
-      # i = 1
-      cat(print_names[i])
-      show_matrix(object_sub[[i]])
-      cat("\n")
-      
-    }
+    # for(i in 1:np){
+    #   # i = 1
+    #   cat(print_names[i])
+    #   show_matrix(object_sub[[i]])
+    #   cat("\n")
+    #   
+    # }
     
     if(np < nl){
       
@@ -167,10 +142,10 @@ setMethod("show", "MatrixList", function(object){
     
   }
   
-  if(nrow(object@metadata) != 0){
-    cat("\nwith metadata slot\n")
-    show_matrix(object@metadata)
-  }
+  # if(nrow(object@metadata) != 0){
+  #   cat("\nwith metadata slot\n")
+  #   show_matrix(object@metadata)
+  # }
   
   
 })
@@ -360,6 +335,59 @@ setMethod("[", signature(x = "MatrixList"), function(x, i, j){
     
   }
   
+})
+
+
+################################
+
+#' @aliases [,matrixORsparseMatrix-method [,matrixORsparseMatrix,ANY-method
+#' @rdname matrixORsparseMatrix-class
+#' @export
+setMethod("[", signature(x = "matrixORsparseMatrix"), function(x, i, j, drop = F){
+  if(is(x, "matrix")){
+    x <- as(x, "matrix")
+  } else{
+    x <- as(x, "sparseMatrix")
+  }
+  
+  if(!missing(i)){
+    
+    if(!missing(j)){
+      return(x[i, j, drop = drop])
+    }else{
+      return(x[i, , drop = drop])
+    }
+  }else{
+    if(!missing(j)){
+      
+      return(x[, j, drop = drop])
+      
+    }else{
+      return(x)
+    }
+  }
+})
+
+
+#' @aliases [[,matrixORsparseMatrix-method
+#' @rdname matrixORsparseMatrix-class
+#' @export
+setMethod("[[", signature(x = "matrixORsparseMatrix"), function(x, i, j, drop = F){
+  if(!missing(i)){
+    if(!missing(j)){
+      return(x[i, j, drop = drop])
+    }else{
+      return(x[i, , drop = drop])
+    }
+  }else{
+    if(!missing(j)){
+      
+      return(x[, j, drop = drop])
+      
+    }else{
+      return(x)
+    }
+  }
 })
 
 
