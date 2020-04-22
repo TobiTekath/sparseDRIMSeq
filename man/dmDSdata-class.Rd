@@ -8,8 +8,9 @@
 \alias{samples,dmDSdata-method}
 \alias{names,dmDSdata-method}
 \alias{length,dmDSdata-method}
-\alias{[,dmDSdata,ANY-method}
+\alias{[,dmDSdata,ANY,ANY,ANY-method}
 \alias{[,dmDSdata-method}
+\alias{[,dmDSdata,ANY-method}
 \title{dmDSdata object}
 \usage{
 \S4method{counts}{dmDSdata}(object)
@@ -22,7 +23,7 @@ samples(x, ...)
 
 \S4method{length}{dmDSdata}(x)
 
-\S4method{[}{dmDSdata,ANY}(x, i, j)
+\S4method{[}{dmDSdata,ANY,ANY,ANY}(x, i, j)
 }
 \arguments{
 \item{object, x}{dmDSdata object.}

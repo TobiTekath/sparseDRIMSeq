@@ -299,6 +299,63 @@ dmDSdata <- function(counts, samples){
 }
 
 
+#' Create sparse dmDSdata object
+#' 
+#' Convenience constructor function for a sparse \code{\linkS4class{dmDSdata}} object.
+#' 
+#' @param tx2gene Data frame which has to contain a \code{gene_id} column with
+#'  gene IDs, \code{feature_id} column with feature IDs.
+#' @param counts matrix or sparseMatrix of count data, with a column for each sample. Rows correspond to features, for
+#'   example, transcripts or exons. Column names corresponding to
+#'   sample IDs must be the same as in the \code{sample} data frame.
+#' @param samples Data frame where each row corresponds to one sample. Columns
+#'   have to contain unique sample IDs in \code{sample_id} variable and a
+#'   grouping variable \code{group}.
+#' @return Returns a \linkS4class{dmDSdata} object.
+#' @seealso \code{\link{plotData}}
+#' @export
+sparse_dmDSdata <- function (tx2gene, counts, samples){
+  stopifnot(class(samples) == "data.frame")
+  stopifnot("sample_id" %in% colnames(samples))
+  stopifnot(sum(duplicated(samples$sample_id)) == 0)
+  stopifnot(is(counts, "matrix")|is(counts, "sparseMatrix"))
+  stopifnot(class(tx2gene) == "data.frame")
+  stopifnot(all(c("gene_id", "feature_id") %in% colnames(tx2gene)))
+  stopifnot(all(samples$sample_id %in% colnames(counts)))
+  stopifnot(sum(duplicated(tx2gene$feature_id)) == 0)
+  gene_id <- tx2gene$gene_id
+  feature_id <- tx2gene$feature_id
+  stopifnot(class(gene_id) %in% c("character", "factor"))
+  stopifnot(class(feature_id) %in% c("character", "factor"))
+  stopifnot(class(samples$sample_id) %in% c("character", "factor"))
+  stopifnot(all(!is.na(gene_id)))
+  stopifnot(all(!is.na(feature_id)))
+  stopifnot(all(!is.na(samples$sample_id)))
+  counts <- counts[, as.character(samples$sample_id), drop = FALSE]
+  if (class(gene_id) == "character")
+    gene_id <- factor(gene_id, levels = unique(gene_id))
+  else gene_id <- factor(gene_id)
+  for (i in 1:ncol(samples)) {
+    if (class(samples[, i]) == "character")
+      samples[, i] <- factor(samples[, i], levels = unique(samples[,
+                                                                   i]))
+    else if (class(samples[, i]) == "factor")
+      samples[, i] <- factor(samples[, i])
+  }
+  or <- order(gene_id)
+  counts <- counts[or, , drop = FALSE]
+  gene_id <- gene_id[or]
+  feature_id <- feature_id[or]
+  rownames(counts) <- feature_id
+  inds <- 1:length(gene_id)
+  names(inds) <- feature_id
+  partitioning <- split(inds, gene_id)
+  data <- new("dmDSdata", counts = MatrixList(unlistData = counts,
+                                              partitioning = partitioning), samples = samples)
+  return(data)
+}
+
+
 ###############################################################################
 ### dmFilter
 ###############################################################################

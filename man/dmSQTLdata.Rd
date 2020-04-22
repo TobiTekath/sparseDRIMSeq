@@ -4,8 +4,15 @@
 \alias{dmSQTLdata}
 \title{Create dmSQTLdata object}
 \usage{
-dmSQTLdata(counts, gene_ranges, genotypes, snp_ranges, samples, window = 5000,
-  BPPARAM = BiocParallel::SerialParam())
+dmSQTLdata(
+  counts,
+  gene_ranges,
+  genotypes,
+  snp_ranges,
+  samples,
+  window = 5000,
+  BPPARAM = BiocParallel::SerialParam()
+)
 }
 \arguments{
 \item{counts}{Data frame with counts. Rows correspond to features, for

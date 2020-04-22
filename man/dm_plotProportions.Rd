@@ -4,9 +4,18 @@
 \alias{dm_plotProportions}
 \title{Plot feature proportions}
 \usage{
-dm_plotProportions(counts, group, md = NULL, fit_full = NULL, main = NULL,
-  plot_type = "boxplot1", order_features = TRUE, order_samples = TRUE,
-  group_colors = NULL, feature_colors = NULL)
+dm_plotProportions(
+  counts,
+  group,
+  md = NULL,
+  fit_full = NULL,
+  main = NULL,
+  plot_type = "boxplot1",
+  order_features = TRUE,
+  order_samples = TRUE,
+  group_colors = NULL,
+  feature_colors = NULL
+)
 }
 \arguments{
 \item{counts}{Matrix with rows corresponding to features and columns 
