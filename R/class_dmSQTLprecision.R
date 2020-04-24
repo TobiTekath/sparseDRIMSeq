@@ -248,7 +248,7 @@ setMethod("dmPrecision", "dmSQTLdata", function(x, mean_expression = TRUE,
     }
     
     ### Use only one SNP per gene and a null model to make computation faster
-    genotypes_null <- new("MatrixList", 
+    genotypes_null <- new("sparseMatrixList", 
       unlistData = matrix(1, nrow = length(genes2keep), 
         ncol = ncol(x@genotypes)), 
       partitioning = split(1:length(genes2keep), 
@@ -282,7 +282,7 @@ setMethod("dmPrecision", "dmSQTLdata", function(x, mean_expression = TRUE,
       G <- length(x@genotypes)
       inds <- 1:G
       
-      genotypes_null <- new( "MatrixList", 
+      genotypes_null <- new( "sparseMatrixList", 
         unlistData = matrix(1, nrow = G, ncol = ncol(x@genotypes)), 
         partitioning = split(inds, factor(names(x@genotypes), 
           levels = names(x@genotypes))) )

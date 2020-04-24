@@ -25,15 +25,15 @@ NULL
 #'   
 #' @slot design_fit_full Numeric matrix of the design used to fit the full 
 #'   model.
-#' @slot fit_full \code{\linkS4class{MatrixList}} containing estimated feature 
+#' @slot fit_full \code{\linkS4class{sparseMatrixList}} containing estimated feature 
 #'   ratios in each sample based on the full Dirichlet-multinomial (DM) model.
 #' @slot lik_full Numeric vector of the per gene DM full model likelihoods.
-#' @slot coef_full \code{\linkS4class{MatrixList}} with the regression 
+#' @slot coef_full \code{\linkS4class{sparseMatrixList}} with the regression 
 #'   coefficients based on the DM model.
-#' @slot fit_full_bb \code{\linkS4class{MatrixList}} containing estimated 
+#' @slot fit_full_bb \code{\linkS4class{sparseMatrixList}} containing estimated 
 #'   feature ratios in each sample based on the full beta-binomial (BB) model.
 #' @slot lik_full_bb Numeric vector of the per gene BB full model likelihoods.
-#' @slot coef_full_bb \code{\linkS4class{MatrixList}} with the regression 
+#' @slot coef_full_bb \code{\linkS4class{sparseMatrixList}} with the regression 
 #'   coefficients based on the BB model.
 #'   
 #' @examples 
@@ -110,12 +110,12 @@ NULL
 setClass("dmDSfit", 
   contains = "dmDSprecision",
   representation(design_fit_full = "matrix",
-    fit_full = "MatrixList",
+    fit_full = "sparseMatrixList",
     lik_full = "numeric",
-    coef_full = "MatrixList",
-    fit_full_bb = "MatrixList",
+    coef_full = "sparseMatrixList",
+    fit_full_bb = "sparseMatrixList",
     lik_full_bb = "numeric",
-    coef_full_bb = "MatrixList"))
+    coef_full_bb = "sparseMatrixList"))
 
 
 # ------------------------------------------------------------------------------

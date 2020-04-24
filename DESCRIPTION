@@ -2,11 +2,13 @@ Package: sparseDRIMSeq
 Type: Package
 Title: sparse Version of original DRIMSeq package. DRIMSeq: Differential transcript usage and tuQTL analyses with Dirichlet-multinomial model
     in RNA-seq
-Version: 0.0.1
-Date: 2020-04-22
+Version: 0.0.2
+Date: 2020-04-24
 Authors@R: c(person(given = "Tobias", family = "Tekath", 
     role = c("aut", "cre"),
-    email = "tobias.tekath@gmail.com"))
+    email = "tobias.tekath@gmail.com"), 
+    person(given = "Malgorzata", family = "Nowicka",
+    role = c("aut")))
 Description: Covers all capabilites of DRIMSeq with support for sparse Matrices. DRIMSeq: The package provides two frameworks. One for the differential
     transcript usage analysis between different conditions and one for the tuQTL analysis.
     Both are based on modeling the counts of genomic features (i.e., transcripts) with the Dirichlet-multinomial distribution. The package also
@@ -19,6 +21,7 @@ License: GPL (>= 3)
 Depends:
     R (>= 3.4.0)
 Imports:
+    Matrix,
     utils,
     stats,
     MASS,
@@ -31,8 +34,7 @@ Imports:
     limma,
     edgeR,
     ggplot2,
-    reshape2,
-    Matrix
+    reshape2
 Suggests:
     PasillaTranscriptExpr,
     GeuvadisTranscriptExpr,
@@ -46,7 +48,7 @@ VignetteBuilder: knitr
 Collate:
     'DRIMSeq.R'
     'class_show_utils.R'
-    'class_MatrixList.R'
+    'class_sparseMatrixList.R'
     'class_dmDSdata.R'
     'class_dmDSprecision.R'
     'class_dmDSfit.R'

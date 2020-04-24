@@ -1,4 +1,4 @@
-#' @include class_MatrixList.R
+#' @include class_sparseMatrixList.R
 NULL
 
 ###############################################################################
@@ -25,9 +25,9 @@ NULL
 #' @param ... Other parameters that can be defined by methods using this 
 #'   generic.
 #'   
-#' @slot counts \code{\linkS4class{MatrixList}} of expression, in counts, of 
+#' @slot counts \code{\linkS4class{sparseMatrixList}} of expression, in counts, of 
 #'   genomic features. Rows correspond to genomic features, such as exons or 
-#'   transcripts. Columns correspond to samples. MatrixList is partitioned in a 
+#'   transcripts. Columns correspond to samples. sparseMatrixList is partitioned in a 
 #'   way that each of the matrices in a list contains counts for a single gene.
 #' @slot samples Data frame with information about samples. It must contain 
 #'   \code{sample_id} variable with unique sample names and other covariates 
@@ -68,7 +68,7 @@ NULL
 #' @seealso \code{\linkS4class{dmDSprecision}}, \code{\linkS4class{dmDSfit}},
 #'   \code{\linkS4class{dmDStest}}
 setClass("dmDSdata", 
-  representation(counts = "MatrixList", samples = "data.frame"))
+  representation(counts = "sparseMatrixList", samples = "data.frame"))
 
 
 ###############################
@@ -291,7 +291,7 @@ dmDSdata <- function(counts, samples){
   
   partitioning <- split(inds, gene_id)
   
-  data <- new("dmDSdata", counts = new("MatrixList", unlistData = counts, 
+  data <- new("dmDSdata", counts = new("sparseMatrixList", unlistData = counts, 
     partitioning = partitioning), samples = samples)
   
   return(data)
@@ -350,7 +350,7 @@ sparse_dmDSdata <- function (tx2gene, counts, samples){
   inds <- 1:length(gene_id)
   names(inds) <- feature_id
   partitioning <- split(inds, gene_id)
-  data <- new("dmDSdata", counts = MatrixList(unlistData = counts,
+  data <- new("dmDSdata", counts = new("sparseMatrixList", unlistData = counts,
                                               partitioning = partitioning), samples = samples)
   return(data)
 }

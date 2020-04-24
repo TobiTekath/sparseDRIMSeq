@@ -41,16 +41,16 @@ created with function \code{\link{dmSQTLdata}}.
 \section{Slots}{
 
 \describe{
-\item{\code{counts}}{\code{\linkS4class{MatrixList}} of expression, in counts, of 
+\item{\code{counts}}{\code{\linkS4class{sparseMatrixList}} of expression, in counts, of 
 genomic features. Rows correspond to genomic features, such as exons or 
-transcripts. Columns correspond to samples. MatrixList is partitioned in a 
+transcripts. Columns correspond to samples. sparseMatrixList is partitioned in a 
 way that each of the matrices in a list contains counts for a single gene.}
 
-\item{\code{genotypes}}{MatrixList of unique genotypes. Rows correspond to blocks, 
+\item{\code{genotypes}}{sparseMatrixList of unique genotypes. Rows correspond to blocks, 
 columns to samples. Each matrix in this list is a collection of unique 
 genotypes that are matched with a given gene.}
 
-\item{\code{blocks}}{MatrixList with two columns \code{block_id} and \code{snp_id}. 
+\item{\code{blocks}}{sparseMatrixList with two columns \code{block_id} and \code{snp_id}. 
 For each gene, it identifies SNPs with identical genotypes across the 
 samples and assigns them to blocks.}
 

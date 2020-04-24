@@ -136,7 +136,7 @@ dmSQTL_filter <- function(counts, genotypes, blocks, samples,
   if(length(counts_new) == 0)
     stop("!No genes left after filtering!")
   
-  counts_new <- MatrixList(counts_new)
+  counts_new <- sparseMatrixList(counts_new)
   
   ########################################################
   # filtering on genotypes
@@ -157,7 +157,7 @@ dmSQTL_filter <- function(counts, genotypes, blocks, samples,
   if(length(genotypes_new) == 0)
     stop("!No SNPs left after filtering!")
   
-  genotypes_new <- MatrixList(genotypes_new)
+  genotypes_new <- sparseMatrixList(genotypes_new)
   counts_new <- counts_new[NULLs]
   
   blocks <- blocks[NULLs, ]
@@ -168,7 +168,7 @@ dmSQTL_filter <- function(counts, genotypes, blocks, samples,
   
   inds <- 1:length(genotypes_new)
   
-  blocks_new <- MatrixList(lapply(inds, function(b){
+  blocks_new <- sparseMatrixList(lapply(inds, function(b){
     # b = 1
     blocks[[b]][blocks[[b]][, "block_id"] %in% rownames(genotypes_new[[b]]), , 
       drop = FALSE]

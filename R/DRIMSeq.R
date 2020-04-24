@@ -3,6 +3,7 @@
 #' @import BiocParallel
 #' @import edgeR
 #' @import GenomicRanges
+#' @import Matrix
 NULL
 
 # ### EXAMPLES ###

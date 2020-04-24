@@ -6,12 +6,12 @@ NULL
 setClassUnion("matrixORsparseMatrix", c("matrix", "sparseMatrix"))
 
 ###############################################################################
-### MatrixList class
+### sparseMatrixList class
 ###############################################################################
 
-#' MatrixList object
+#' sparseMatrixList object
 #' 
-#' A MatrixList object is a container for a list of matrices which have the same
+#' A sparseMatrixList object is a container for a list of matrices which have the same
 #' number of columns but can have varying number of rows. Additionally, one can
 #' store an extra information corresponding to each of the matrices in
 #' \code{metadata} matrix.
@@ -35,10 +35,10 @@ setClassUnion("matrixORsparseMatrix", c("matrix", "sparseMatrix"))
 #' columns j of this matrix. 
 #' \item \code{x$name}: Shortcut for
 #' \code{x[["name"]]}. 
-#' \item \code{x[i, j]}: Get a subset of MatrixList that
+#' \item \code{x[i, j]}: Get a subset of sparseMatrixList that
 #' consists of matrices i with columns j. }
 #' 
-#' @param x MatrixList object.
+#' @param x sparseMatrixList object.
 #' @param value,i,j,name Parameters used for subsetting and assigning new
 #'   attributes to x.
 #'   
@@ -48,8 +48,8 @@ setClassUnion("matrixORsparseMatrix", c("matrix", "sparseMatrix"))
 #'   
 #' @slot metadata Matrix of additional information where each row corresponds to
 #'   one of the matrices in a list.
-#' @exportClass MatrixList
-setClass(Class = "MatrixList",
+#' @exportClass sparseMatrixList
+setClass(Class = "sparseMatrixList",
          slots = c(unlistData = "matrixORsparseMatrix",
                    partitioning = "list",
                    metadata = "matrix"), package = "DTUrtle")
@@ -57,7 +57,7 @@ setClass(Class = "MatrixList",
 
 ###################################
 
-setValidity("MatrixList", function(object){
+setValidity("sparseMatrixList", function(object){
   # has to return TRUE when valid object!
   
   partitioning_unlist <- unlist(object@partitioning)
@@ -85,20 +85,50 @@ setValidity("MatrixList", function(object){
 
 
 ###############################################################################
-### MatrixList
+### sparseMatrixList
 ###############################################################################
 
-#' @export
-MatrixList <- function(unlistData, partitioning, metadata){
+sparseMatrixList <- function(..., metadata){
   
-  if(!missing(metadata))
-    return(new("MatrixList", unlistData = unlistData,
-               partitioning = partitioning,
-               metadata = metadata))
-  else
-    return(new("MatrixList", unlistData = unlistData,
-               partitioning = partitioning))
+  listData <- list(...)
+  
+  if (length(listData) == 1L && is.list(listData[[1L]]))
+    listData <- listData[[1L]]
+  
+  if (length(listData) == 0L) {
+    return(new("sparseMatrixList"))
+    
+  } else {
+    
+    if (!all(sapply(listData, is, "matrix"))&!all(sapply(listData, is, "sparseMatrix")))
+      stop("all elements in '...' must be matrices!")
+    
+    unlistData <- do.call(rbind, listData)
+    
+    w <- sapply(listData, nrow)
+    
+    partitioning <- vector("list", length(w))
+    
+    inds <- 1:nrow(unlistData)
+    names(inds) <- rownames(unlistData)
+    
+    partitioning[w != 0] <- split(inds, rep(1:length(w), w))
+    
+    if(!is.null(names(listData)))
+      names(partitioning) <- names(listData)
+    
+    if(!missing(metadata))
+      return(new("sparseMatrixList", unlistData = unlistData, 
+                 partitioning = partitioning, 
+                 metadata = metadata))
+    else
+      return(new("sparseMatrixList", unlistData = unlistData, 
+                 partitioning = partitioning))
+    
+  }
+  
 }
+
 
 
 ################################################################################
@@ -106,7 +136,7 @@ MatrixList <- function(unlistData, partitioning, metadata){
 ################################################################################
 
 
-setMethod("show", "MatrixList", function(object){
+setMethod("show", "sparseMatrixList", function(object){
   
   nhead <- 2
   
@@ -155,18 +185,18 @@ setMethod("show", "MatrixList", function(object){
 ### accessing methods
 ###############################################################################
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("names", "MatrixList", function(x){
+setMethod("names", "sparseMatrixList", function(x){
   
   names(x@partitioning)
   
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("names<-", "MatrixList", function(x, value){
+setMethod("names<-", "sparseMatrixList", function(x, value){
   
   names(x@partitioning) <- value
   x
@@ -174,79 +204,79 @@ setMethod("names<-", "MatrixList", function(x, value){
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("rownames", "MatrixList", function(x){
+setMethod("rownames", "sparseMatrixList", function(x){
   
   rownames(x@unlistData)
   
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("rownames<-", "MatrixList", function(x, value){
+setMethod("rownames<-", "sparseMatrixList", function(x, value){
   
   rownames(x@unlistData) <- value
   x
 })
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("colnames", "MatrixList", function(x){
+setMethod("colnames", "sparseMatrixList", function(x){
   
   colnames(x@unlistData)
   
 })
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("colnames<-", "MatrixList", function(x, value){
+setMethod("colnames<-", "sparseMatrixList", function(x, value){
   
   colnames(x@unlistData) <- value
   x
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("length", "MatrixList", function(x){
+setMethod("length", "sparseMatrixList", function(x){
   
   length(x@partitioning)
   
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
 #' @importFrom S4Vectors elementNROWS
-setMethod("elementNROWS", "MatrixList", function(x){
+setMethod("elementNROWS", "sparseMatrixList", function(x){
   
   sapply(x@partitioning, length)
   
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("dim", "MatrixList", function(x){
+setMethod("dim", "sparseMatrixList", function(x){
   
   dim(x@unlistData)
   
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("nrow", "MatrixList", function(x){
+setMethod("nrow", "sparseMatrixList", function(x){
   
   nrow(x@unlistData)
   
 })
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("ncol", "MatrixList", function(x){
+setMethod("ncol", "sparseMatrixList", function(x){
   
   ncol(x@unlistData)
   
@@ -258,10 +288,10 @@ setMethod("ncol", "MatrixList", function(x){
 ###############################################################################
 
 
-#' @aliases [[,MatrixList-method
-#' @rdname MatrixList-class
+#' @aliases [[,sparseMatrixList-method
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("[[", signature(x = "MatrixList"), function(x, i, j){
+setMethod("[[", signature(x = "sparseMatrixList"), function(x, i, j){
   
   if(!missing(j))
     return(x@unlistData[x@partitioning[[i]], j , drop = FALSE])
@@ -271,9 +301,9 @@ setMethod("[[", signature(x = "MatrixList"), function(x, i, j){
 })
 
 
-#' @rdname MatrixList-class
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("$", "MatrixList", function(x, name){
+setMethod("$", "sparseMatrixList", function(x, name){
   
   x[[name]]
   
@@ -282,22 +312,22 @@ setMethod("$", "MatrixList", function(x, name){
 
 ################################
 
-#' @aliases [,MatrixList-method [,MatrixList,ANY-method
-#' @rdname MatrixList-class
+#' @aliases [,sparseMatrixList-method [,sparseMatrixList,ANY-method
+#' @rdname sparseMatrixList-class
 #' @export
-setMethod("[", signature(x = "MatrixList"), function(x, i, j){
+setMethod("[", signature(x = "sparseMatrixList"), function(x, i, j){
   
   if(!missing(i)){
     
     if(!missing(j)){
       
       if(nrow(x@metadata) != 0)
-        return(new("MatrixList", 
+        return(new("sparseMatrixList", 
           unlistData = x@unlistData[unlist(x@partitioning[i]), j, drop = FALSE], 
           partitioning = relist(1:nrow(x@unlistData), x@partitioning[i]), 
           metadata = x@metadata[i, , drop = FALSE]))
       else
-        return(new("MatrixList", 
+        return(new("sparseMatrixList", 
           unlistData = x@unlistData[unlist(x@partitioning[i]), j, drop = FALSE], 
           partitioning = relist(1:nrow(x@unlistData), x@partitioning[i]), 
           metadata = x@metadata))
@@ -306,12 +336,12 @@ setMethod("[", signature(x = "MatrixList"), function(x, i, j){
     }else{
       
       if(nrow(x@metadata) != 0)
-        return(new("MatrixList", 
+        return(new("sparseMatrixList", 
           unlistData = x@unlistData[unlist(x@partitioning[i]), , drop = FALSE], 
           partitioning = relist(1:nrow(x@unlistData), x@partitioning[i]), 
           metadata = x@metadata[i, , drop = FALSE]))
       else
-        return(new("MatrixList", 
+        return(new("sparseMatrixList", 
           unlistData = x@unlistData[unlist(x@partitioning[i]), , drop = FALSE], 
           partitioning = relist(1:nrow(x@unlistData), x@partitioning[i]), 
           metadata = x@metadata))   
@@ -322,7 +352,7 @@ setMethod("[", signature(x = "MatrixList"), function(x, i, j){
     
     if(!missing(j)){
       
-      return(new("MatrixList", 
+      return(new("sparseMatrixList", 
         unlistData = x@unlistData[, j, drop = FALSE], 
         partitioning = x@partitioning, 
         metadata = x@metadata))

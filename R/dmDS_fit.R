@@ -70,7 +70,7 @@ dmDS_fit <- function(counts, design, precision,
     
     lik <- unlist(lapply(ff, function(f) sum(f[["lik"]]))) 
     
-    prop <- MatrixList(lapply(ff, function(f) f[["prop"]]))
+    prop <- sparseMatrixList(lapply(ff, function(f) f[["prop"]]))
     
     fit <- prop[, groups]
     colnames(fit) <- colnames(counts)
@@ -79,13 +79,13 @@ dmDS_fit <- function(counts, design, precision,
     design_unique <- unique(design)
     
     # Use the last feature (q-th) as a denominator
-    logit_prop <- MatrixList(lapply(ff, function(f) 
+    logit_prop <- sparseMatrixList(lapply(ff, function(f) 
       t(t(f[["prop"]])/f[["prop"]][nrow(f[["prop"]]), ])))
     logit_prop <- log(logit_prop@unlistData)
     
     coef <- t(solve(design_unique, t(logit_prop)))
     
-    coef <- new("MatrixList", unlistData = coef, 
+    coef <- new("sparseMatrixList", unlistData = coef, 
       partitioning = prop@partitioning)
     colnames(coef) <- colnames(design)
     
@@ -102,10 +102,10 @@ dmDS_fit <- function(counts, design, precision,
     
     lik <- unlist(lapply(ff, function(f) f[["lik"]])) 
     
-    coef <- MatrixList(lapply(ff, function(f) f[["b"]]))
+    coef <- sparseMatrixList(lapply(ff, function(f) f[["b"]]))
     colnames(coef) <- colnames(design)
     
-    fit <- MatrixList(lapply(ff, function(f) f[["fit"]]))
+    fit <- sparseMatrixList(lapply(ff, function(f) f[["fit"]]))
     colnames(fit) <- colnames(counts)
 
   }
@@ -114,9 +114,9 @@ dmDS_fit <- function(counts, design, precision,
   if(verbose >= 2) message("\n")
   if(verbose) message("Took ", round(time_end - time_start, 4), " seconds.\n")
   
-  # fit is a MatrixList of matrices q x p
+  # fit is a sparseMatrixList of matrices q x p
   # lik is a vector of length G
-  # coef is a MatrixList of matrices q x p
+  # coef is a sparseMatrixList of matrices q x p
   return(list(fit = fit, lik = lik, coef = coef))
   
   
@@ -204,7 +204,7 @@ bbDS_fit <- function(counts, fit, design, precision,
     # Get the coefficients like in edgeR::mglmOneWay
     design_unique <- unique(design)
     
-    logit_prop <- MatrixList(lapply(ff, function(f){
+    logit_prop <- sparseMatrixList(lapply(ff, function(f){
       f[["prop"]]/(1 - f[["prop"]])
     }))
     logit_prop <- log(logit_prop@unlistData)
@@ -212,7 +212,7 @@ bbDS_fit <- function(counts, fit, design, precision,
     # design_unique must be squared for solve()
     coef <- t(solve(design_unique, t(logit_prop)))
     
-    coef <- new("MatrixList", unlistData = coef, 
+    coef <- new("sparseMatrixList", unlistData = coef, 
       partitioning = prop@partitioning)
     
     
@@ -229,10 +229,10 @@ bbDS_fit <- function(counts, fit, design, precision,
     lik <- unlist(lapply(ff, function(f) f[["lik"]])) 
     names(lik) <- rownames(counts)
     
-    coef <- MatrixList(lapply(ff, function(f) f[["b"]]))
+    coef <- sparseMatrixList(lapply(ff, function(f) f[["b"]]))
     colnames(coef) <- colnames(design)
     
-    fit <- MatrixList(lapply(ff, function(f) f[["fit"]]))
+    fit <- sparseMatrixList(lapply(ff, function(f) f[["fit"]]))
     colnames(fit) <- colnames(counts)
     
   }
@@ -241,9 +241,9 @@ bbDS_fit <- function(counts, fit, design, precision,
   if(verbose >= 2) message("\n")
   if(verbose) message("Took ", round(time_end - time_start, 4), " seconds.\n")
   
-  # fit is a MatrixList of matrices q x p
+  # fit is a sparseMatrixList of matrices q x p
   # lik is a vector of length nrow(counts) = total number of features
-  # coef is a MatrixList of matrices q x p
+  # coef is a sparseMatrixList of matrices q x p
   return(list(fit = fit, lik = lik, coef = coef))
   
   

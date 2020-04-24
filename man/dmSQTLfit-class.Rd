@@ -15,14 +15,14 @@ all the SNPs/blocks assigned to the genes. Result of \code{\link{dmFit}}.
 \section{Slots}{
 
 \describe{
-\item{\code{fit_full}}{List of \code{\linkS4class{MatrixList}} objects containing 
+\item{\code{fit_full}}{List of \code{\linkS4class{sparseMatrixList}} objects containing 
 estimated feature ratios in each sample based on the full 
 Dirichlet-multinomial (DM) model.}
 
 \item{\code{lik_full}}{List of numeric vectors of the per gene DM full model 
 likelihoods.}
 
-\item{\code{coef_full}}{\code{\linkS4class{MatrixList}} with the regression 
+\item{\code{coef_full}}{\code{\linkS4class{sparseMatrixList}} with the regression 
 coefficients based on the DM model.}
 }}
 

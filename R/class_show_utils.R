@@ -147,7 +147,7 @@ show_numeric_list <- function(object, nhead = 2){
 ################################################################################
 
 
-show_MatrixList_list <- function(object, nhead = 2){
+show_sparseMatrixList_list <- function(object, nhead = 2){
   
   nl <- length(object)  
   cat(class(object), "of length", nl, "\n")

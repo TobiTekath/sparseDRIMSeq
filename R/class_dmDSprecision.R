@@ -706,5 +706,5 @@ addUniform <- function(counts, uniform_max=0.1) {
     expr
   })
   names(counts_new) <- names(counts)
-  MatrixList(counts_new)
+  sparseMatrixList(counts_new)
 }

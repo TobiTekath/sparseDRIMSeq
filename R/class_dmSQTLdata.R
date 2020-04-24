@@ -1,4 +1,4 @@
-#' @include class_MatrixList.R
+#' @include class_sparseMatrixList.R
 NULL
 
 ###############################################################################
@@ -21,14 +21,14 @@ NULL
 #' @param x,object dmSQTLdata object.
 #' @param i,j Parameters used for subsetting.
 #'   
-#' @slot counts \code{\linkS4class{MatrixList}} of expression, in counts, of 
+#' @slot counts \code{\linkS4class{sparseMatrixList}} of expression, in counts, of 
 #'   genomic features. Rows correspond to genomic features, such as exons or 
-#'   transcripts. Columns correspond to samples. MatrixList is partitioned in a 
+#'   transcripts. Columns correspond to samples. sparseMatrixList is partitioned in a 
 #'   way that each of the matrices in a list contains counts for a single gene.
-#' @slot genotypes MatrixList of unique genotypes. Rows correspond to blocks, 
+#' @slot genotypes sparseMatrixList of unique genotypes. Rows correspond to blocks, 
 #'   columns to samples. Each matrix in this list is a collection of unique 
 #'   genotypes that are matched with a given gene.
-#' @slot blocks MatrixList with two columns \code{block_id} and \code{snp_id}. 
+#' @slot blocks sparseMatrixList with two columns \code{block_id} and \code{snp_id}. 
 #'   For each gene, it identifies SNPs with identical genotypes across the 
 #'   samples and assigns them to blocks.
 #' @slot samples Data frame with information about samples. It must contain 
@@ -59,9 +59,9 @@ NULL
 #' @seealso \code{\linkS4class{dmSQTLprecision}}, 
 #'   \code{\linkS4class{dmSQTLfit}}, \code{\linkS4class{dmSQTLtest}}
 setClass("dmSQTLdata", 
-  representation(counts = "MatrixList", 
-    genotypes = "MatrixList", 
-    blocks = "MatrixList",
+  representation(counts = "sparseMatrixList", 
+    genotypes = "sparseMatrixList", 
+    blocks = "sparseMatrixList",
     samples = "data.frame"))
 
 
@@ -376,20 +376,20 @@ dmSQTLdata <- function(counts, gene_ranges, genotypes, snp_ranges, samples,
   names(inds_genotypes) <- snp_id
   partitioning_genotypes <- split(inds_genotypes, gene_id_genotypes)
   
-  counts <- new( "MatrixList", unlistData = counts, 
+  counts <- new( "sparseMatrixList", unlistData = counts, 
     partitioning = partitioning_counts)
-  genotypes <- new( "MatrixList", unlistData = genotypes, 
+  genotypes <- new( "sparseMatrixList", unlistData = genotypes, 
     partitioning = partitioning_genotypes)
   
   ### Keep unique genotypes and create info about blocs
   inds <- 1:length(genotypes)
   
-  blocks <- MatrixList(BiocParallel::bplapply(inds, blocks_per_gene, 
+  blocks <- sparseMatrixList(BiocParallel::bplapply(inds, blocks_per_gene, 
     genotypes = genotypes, BPPARAM = BPPARAM))
   
   names(blocks) <- names(genotypes)
   
-  genotypes_u <- MatrixList(lapply(inds, function(g){
+  genotypes_u <- sparseMatrixList(lapply(inds, function(g){
     # g = 1
     
     genotypes_tmp <- unique(genotypes[[g]])

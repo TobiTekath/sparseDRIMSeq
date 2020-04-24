@@ -81,7 +81,7 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
   if(length(counts_new) == 0)
     stop("!No genes left after filtering!")
   
-  counts_new <- MatrixList(counts_new)
+  counts_new <- sparseMatrixList(counts_new)
   
   return(counts_new)
   

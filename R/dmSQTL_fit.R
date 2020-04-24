@@ -36,11 +36,11 @@ dmSQTL_fitManyGroups_gene <- function(g, counts, genotypes,
   })
   
   lik <- unlist(lapply(ff, function(f) f[["lik"]])) 
-  fit <- MatrixList(lapply(ff, function(f) f[["fit"]]))
+  fit <- sparseMatrixList(lapply(ff, function(f) f[["fit"]]))
   colnames(fit) <- colnames(counts)
   
   # lik is a vector of length nrow(x)
-  # fit is a MatrixList of matrices q x n
+  # fit is a sparseMatrixList of matrices q x n
   # DOES NOT return coef
   return(list(lik = lik, fit = fit))
   
@@ -78,11 +78,11 @@ dmSQTL_fitRegression_gene <- function(g, counts, genotypes,
   })
   
   lik <- unlist(lapply(ff, function(f) f[["lik"]])) 
-  fit <- MatrixList(lapply(ff, function(f) f[["fit"]]))
+  fit <- sparseMatrixList(lapply(ff, function(f) f[["fit"]]))
   colnames(fit) <- colnames(counts)
   
   # lik is a vector of length nrow(x)
-  # fit is a MatrixList of matrices q x n
+  # fit is a sparseMatrixList of matrices q x n
   # DOES NOT return coef
   return(list(lik = lik, fit = fit))
   
@@ -154,7 +154,7 @@ dmSQTL_fit <- function(counts, genotypes, precision,
   if(verbose >= 2) message("\n")
   if(verbose) message("Took ", round(time_end - time_start, 4), " seconds.\n")
   
-  # fit is a list of length G of MatrixLists
+  # fit is a list of length G of sparseMatrixLists
   # lik is a list of length G ofvectors
   # coef Currently, do not compute coef 
   return(list(fit = fit, lik = lik, coef = list()))

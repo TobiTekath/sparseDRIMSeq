@@ -49,9 +49,9 @@ exon/transcript usage (DEU or DTU) analysis. It can be created with function
 \section{Slots}{
 
 \describe{
-\item{\code{counts}}{\code{\linkS4class{MatrixList}} of expression, in counts, of 
+\item{\code{counts}}{\code{\linkS4class{sparseMatrixList}} of expression, in counts, of 
 genomic features. Rows correspond to genomic features, such as exons or 
-transcripts. Columns correspond to samples. MatrixList is partitioned in a 
+transcripts. Columns correspond to samples. sparseMatrixList is partitioned in a 
 way that each of the matrices in a list contains counts for a single gene.}
 
 \item{\code{samples}}{Data frame with information about samples. It must contain 
