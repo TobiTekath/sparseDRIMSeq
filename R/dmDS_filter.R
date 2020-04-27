@@ -17,12 +17,12 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
       return(NULL)
     
     ### genes with min expression
-    if(! sum(colSums(expr_features) >= min_gene_expr, na.rm = TRUE) >= 
+    if(! sum(Matrix::colSums(expr_features) >= min_gene_expr, na.rm = TRUE) >= 
         min_samps_gene_expr )
       return(NULL)
     
     ### no features with no expression
-    features2keep <- rowSums(expr_features > 0, na.rm = TRUE) > 0
+    features2keep <- Matrix::rowSums(expr_features > 0, na.rm = TRUE) > 0
     
     ### no genes with one feature
     if(sum(features2keep) <= 1)
@@ -31,7 +31,7 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
     expr_features <- expr_features[features2keep, , drop = FALSE]
     
     ### features with min expression
-    features2keep <- rowSums(expr_features >= min_feature_expr, na.rm = TRUE) >= 
+    features2keep <- Matrix::rowSums(expr_features >= min_feature_expr, na.rm = TRUE) >= 
       min_samps_feature_expr
     
     ### no genes with one feature
@@ -41,18 +41,19 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
     expr_features <- expr_features[features2keep, , drop = FALSE]
     
     ### genes with zero expression
-    samps2keep <- colSums(expr_features) > 0 & !is.na(expr_features[1, ])
+    samps2keep <- Matrix::colSums(expr_features) > 0 & !is.na(expr_features[1, ])
     
     if(sum(samps2keep) < max(1, min_samps_feature_prop))
       return(NULL)
     
-    prop <- prop.table(expr_features[, samps2keep, drop = FALSE], 2) 
+    temp <- expr_features[, samps2keep, drop = FALSE]
+    prop <- sweep(temp, 2, Matrix::colSums(temp), "/")
     # prop.table(matrix(c(1,0), 2, 1), 2)
     # prop.table(matrix(c(0,0), 2, 1), 2)
     # prop.table(matrix(c(0,0, 1, 0), 2, 2), 2)
     
     ### features with min proportion
-    features2keep <- rowSums(prop >= min_feature_prop) >= min_samps_feature_prop
+    features2keep <- Matrix::rowSums(prop >= min_feature_prop) >= min_samps_feature_prop
     
     ### no genes with one feature
     if(sum(features2keep) <= 1)
@@ -66,7 +67,7 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
         return(NULL)
       
       ### genes with min expression
-      if(! sum(colSums(expr_features) >= min_gene_expr, na.rm = TRUE) >= 
+      if(! sum(Matrix::colSums(expr_features) >= min_gene_expr, na.rm = TRUE) >= 
          min_samps_gene_expr )
         return(NULL)
     }
