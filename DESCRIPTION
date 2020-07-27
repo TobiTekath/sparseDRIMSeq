@@ -2,8 +2,8 @@ Package: sparseDRIMSeq
 Type: Package
 Title: sparse Version of original DRIMSeq package. DRIMSeq: Differential transcript usage and tuQTL analyses with Dirichlet-multinomial model
     in RNA-seq
-Version: 0.1.1
-Date: 2020-04-24
+Version: 0.1.2
+Date: 2020-07-27
 Authors@R: c(person(given = "Tobias", family = "Tekath", 
     role = c("aut", "cre"),
     email = "tobias.tekath@gmail.com"), 

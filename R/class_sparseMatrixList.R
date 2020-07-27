@@ -1,5 +1,5 @@
 #' @include class_show_utils.R
-#' @import Matrix
+#' @rawNamespace import(Matrix, except = c(which, head, tail))
 NULL
 
 #' @name matrixORsparseMatrix-class

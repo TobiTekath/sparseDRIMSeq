@@ -1,3 +1,4 @@
+#' @importFrom Matrix colSums rowSums diag
 
 dmDS_filter <- function(counts, min_samps_gene_expr = 6, 
   min_gene_expr = 10, min_samps_feature_expr = 3, min_feature_expr = 10, 
@@ -47,7 +48,7 @@ dmDS_filter <- function(counts, min_samps_gene_expr = 6,
       return(NULL)
     
     temp <- expr_features[, samps2keep, drop = FALSE]
-    prop <- sweep(temp, 2, Matrix::colSums(temp), "/")
+    prop <- temp %*% Matrix::diag(1/Matrix::colSums(temp))
     # prop.table(matrix(c(1,0), 2, 1), 2)
     # prop.table(matrix(c(0,0), 2, 1), 2)
     # prop.table(matrix(c(0,0, 1, 0), 2, 2), 2)
